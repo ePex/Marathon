@@ -39,3 +39,8 @@ jobs:
           fail-build: false # to always generate the report, then again a scan that might fail
       - name: Inspect Dependency SARIF Report
         run: cat ${{ steps.scan.outputs.sarif }}
+
+      - name: Secret Scan with Trufflehog
+        uses: UnicornGlobal/trufflehog-actions-scan@master
+        with: # exclusions in .truffleignore file
+          branch: ${{ github.head_ref }}
