@@ -22,9 +22,20 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
+
       - name: Build with Maven & Run SpotBugs
         run: mvn clean install -DskipTests com.github.spotbugs:spotbugs-maven-plugin:3.1.12:spotbugs
       - name: Inspect SpotBugs Report
         uses: jwgmeligmeyling/spotbugs-github-action@master
         with:
           path: '**/spotbugsXml.xml'
+
+      - name: Grype Dependency Scanner (Report)
+        id: scan
+        uses: anchore/scan-action@v5
+        with:
+          path: "."
+          #acs-report-enable: true
+          fail-build: false # to always generate the report, then again a scan that might fail
+      - name: Inspect Dependency SARIF Report
+        run: cat ${{ steps.scan.outputs.sarif }}
