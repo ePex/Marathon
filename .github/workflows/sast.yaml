@@ -44,3 +44,9 @@ jobs:
         uses: UnicornGlobal/trufflehog-actions-scan@master
         with: # exclusions in .truffleignore file
           branch: ${{ github.head_ref }}
+
+      - name: Hadolint Dockerfile Linter
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: Dockerfile
+          recursive: true
