@@ -50,3 +50,29 @@ jobs:
         with:
           dockerfile: Dockerfile
           recursive: true
+
+  Semgrep-Scan:
+    runs-on: ubuntu-latest
+    container:
+      # A Docker image with Semgrep installed. Do not change this.
+      image: returntocorp/semgrep
+    permissions:
+      # required for all workflows
+      security-events: write
+      # only required for workflows in private repositories
+      actions: read
+      contents: read
+
+    steps:
+      - name: Checkout Sources
+        uses: actions/checkout@v4
+      - name: Semgrep Quality Scanner
+        run: semgrep scan --sarif --metrics=off --config=p/security-audit --config=p/secrets --config=p/ci . > semgrep-results.sarif
+
+      # upload the results for the CodeQL GitHub app to annotate the code
+      - name: Save SARIF results as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: semgrep-scan-results-open-in-ide
+          path: semgrep-results.sarif
+
