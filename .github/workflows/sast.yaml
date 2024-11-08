@@ -1,7 +1,7 @@
 name: SAST Scans
 
 on:
-  #push:
+  push:
   workflow_dispatch: # to allow to run manually
 
 jobs:
